@@ -9,7 +9,7 @@ const ViewEnquiries = () => {
 
   const fetchEnquiries = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/enquiries");
+      const res = await axios.get("https://node-stamy.vercel.app/enquiries");
       setEnquiries(res.data);
     } catch (err) {
       console.error(err);

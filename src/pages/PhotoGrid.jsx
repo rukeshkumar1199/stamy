@@ -17,7 +17,7 @@ export default function PhotoGrid() {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/events");
+      const res = await axios.get("https://node-stamy.vercel.app/events");
       setEvents(res.data);
     } catch (err) {
       console.error(err);

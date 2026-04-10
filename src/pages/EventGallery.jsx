@@ -25,7 +25,9 @@ export default function EventGallery() {
   // 🔥 Fetch all images (only once)
   const fetchImages = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/events/${id}/images`);
+      const res = await axios.get(
+        `https://node-stamy.vercel.app/events/${id}/images`,
+      );
       setImages(res.data);
       setVisibleImages(res.data.slice(0, 12)); // first batch
     } catch (err) {

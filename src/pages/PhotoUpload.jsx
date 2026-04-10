@@ -60,7 +60,10 @@ export default function PhotoUpload() {
       setLoading(true);
       setMessage("");
 
-      const res = await axios.post("http://localhost:8000/events", data);
+      const res = await axios.post(
+        "https://node-stamy.vercel.app/events",
+        data,
+      );
 
       setEventId(res.data._id);
       setMessage("✅ Event created! Now upload gallery images");
@@ -113,7 +116,10 @@ export default function PhotoUpload() {
       setLoading(true);
       setMessage("");
 
-      await axios.post(`http://localhost:8000/events/${eventId}/images`, data);
+      await axios.post(
+        `https://node-stamy.vercel.app/events/${eventId}/images`,
+        data,
+      );
 
       setMessage("🔥 Images uploaded successfully");
       setFiles([]);

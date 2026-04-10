@@ -59,7 +59,7 @@ export default function Enquiry() {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:8000/enquiry", form);
+      await axios.post("https://node-stamy.vercel.app/enquiry", form);
 
       setStatus({
         message: "Enquiry submitted successfully 🎉",

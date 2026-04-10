@@ -32,7 +32,7 @@ export default function WeddingGallery() {
   const [loading, setLoading] = useState(true);
   const fetchEvents = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/events");
+      const res = await axios.get("https://node-stamy.vercel.app/events");
       setEvents(res.data);
     } catch (err) {
       console.error(err);
