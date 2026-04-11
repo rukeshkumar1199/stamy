@@ -2,10 +2,8 @@ import { Routes, Route } from "react-router-dom";
 
 import Footer from "./pages/Footer";
 import HeroVideo from "./pages/HeroVideo";
-import Navbar from "./pages/Navbar";
+import Navbar from "./components/Navbar";
 import PhotoUpload from "./pages/PhotoUpload";
-// import OurServices from "./pages/OurServices";
-// import PortfolioCards from "./pages/PortfolioCards";
 import VideoShowcase from "./pages/VideoShowcase";
 import AboutUs from "./pages/AboutUs";
 import Enquiry from "./pages/Enquiry";

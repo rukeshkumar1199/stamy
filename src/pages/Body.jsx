@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 // eslint-disable-next-line no-unused-vars
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { AiFillPlayCircle } from "react-icons/ai";
 import Footer from "./Footer";
 import { useLocation } from "react-router-dom";

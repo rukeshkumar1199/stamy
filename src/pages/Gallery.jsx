@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { FiCamera } from "react-icons/fi";
 
 // const gallery = [
 //   {
@@ -45,7 +46,7 @@ export default function WeddingGallery() {
     fetchEvents();
   }, []);
   return (
-    <section className="bg-[#fafafa] pt-20 pb-10">
+    <section className="bg-[#fafafa] mt-20 pt-20 pb-10">
       {/* Heading */}
       <div className="text-center mb-24 px-4">
         {/* Small Tagline */}
@@ -157,6 +158,27 @@ export default function WeddingGallery() {
               </div>
             ),
         )}
+      </div>
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+        <button
+          style={{ fontFamily: "'Poppins', sans-serif" }}
+          className="
+      flex items-center gap-2 cursor-pointer
+      mt-20
+      px-5 py-3
+      rounded-xl
+      bg-[#b59a5b]
+      text-white text-sm tracking-wide
+      transition-all duration-300
+      hover:bg-[#c9ad6a]
+      hover:shadow-[0_8px_25px_rgba(181,154,91,0.4)]
+      hover:-translate-y-1
+      active:scale-95
+    "
+          onClick={() => navigate("/PhotoGrid")}
+        >
+          <FiCamera className="text-lg" /> Explore Photography
+        </button>
       </div>
     </section>
   );
