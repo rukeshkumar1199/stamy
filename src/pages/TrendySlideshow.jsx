@@ -26,7 +26,7 @@ export default function TrendySlideshow() {
   }, []);
 
   return (
-    <div className="relative w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-screen overflow-hidden">
+    <div className="relative w-full h-[70vh] mx-auto md:h-[60vh] md:w-[70vw]  overflow-hidden">
       {/* Slides */}
       {images.map((img, i) => (
         <img

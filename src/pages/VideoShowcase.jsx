@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useState } from "react";
 import TrendySlideshow from "./TrendySlideshow";
 import Gallery from "./Gallery";
@@ -102,7 +102,7 @@ export default function TrendyPortfolioCards() {
 
   return (
     <section className="py-20  text-white">
-      <div className=" mx-auto px-6 text-center">
+      <div className=" mx-auto text-center">
         {/* Heading */}
         <motion.div
           variants={headingVariants}
@@ -154,26 +154,7 @@ export default function TrendyPortfolioCards() {
           <TrendySlideshow />
         </div>
         <Gallery />
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <button
-            style={{ fontFamily: "'Poppins', sans-serif" }}
-            className="
-      flex items-center gap-2 cursor-pointer
-      px-5 py-3
-      rounded-xl
-      bg-[#b59a5b]
-      text-white text-sm tracking-wide
-      transition-all duration-300
-      hover:bg-[#c9ad6a]
-      hover:shadow-[0_8px_25px_rgba(181,154,91,0.4)]
-      hover:-translate-y-1
-      active:scale-95
-    "
-            onClick={() => navigate("/PhotoGrid")}
-          >
-            <FiCamera className="text-lg" /> Explore Photography
-          </button>
-        </div>
+
         <div className="mt-15 px-4">
           <blockquote className="relative max-w-3xl mx-auto text-center">
             {/* Quote Icon */}
