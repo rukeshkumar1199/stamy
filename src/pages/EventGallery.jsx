@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Footer from "./Footer";
 import { useParams, useLocation } from "react-router-dom";
 import { useEffect, useState, useRef, useCallback } from "react";

@@ -1,5 +1,8 @@
 import heroVideo from "../assets/hero.mp4";
 import { useNavigate } from "react-router-dom";
+import BlurText from "../components/BlurText";
+import { fadeUp } from "../animation";
+import { motion } from "motion/react";
 export default function HeroVideo() {
   const navigate = useNavigate();
 
@@ -19,25 +22,54 @@ export default function HeroVideo() {
       <div className="absolute inset-0 bg-black/50 z-10"></div>
 
       {/* Hero Content */}
-      <div className="relative z-20 flex h-full items-center justify-center text-center px-6">
-        <div>
-          <h1 className="text-4xl md:text-6xl font-light tracking-widest text-white">
-            STAMY CREATIONS
-          </h1>
-          <p className="mt-6 text-sm md:text-base tracking-widest text-[#d4af37] max-w-2xl mx-auto">
-            We create cinematic wedding films that capture love, joy, and
-            timeless memories. Every story we tell is handcrafted with care,
-            passion, and a touch of elegance, turning your special day into a
-            beautiful visual journey.
-          </p>
+      <div className="relative flex-col z-20 flex h-full items-center justify-center text-center px-6">
+        <BlurText
+          className="text-3xl md:text-7xl font-medium tracking-widest text-white font-serif"
+          text="STAMY CREATIONS"
+        />
 
-          <button
-            className="mt-10 px-8 py-3 border border-[#d4af37] text-[#d4af37] uppercase tracking-widest text-sm hover:bg-[#d4af37] hover:text-black transition"
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.5, ease: "ease" }}
+        >
+          <p className="mt-6 text-center text-xs md:text-base tracking-wide text-[#d4af37] max-w-2xl mx-auto">
+            We don’t just film weddings, we tell stories. Stories of love,
+            laughter, and fleeting moments that deserve to last forever. Each
+            film is crafted with intention, passion, and a cinematic touch,
+            turning your day into a timeless visual journey.
+          </p>
+          <motion.button
             onClick={() => navigate("/Enquiry")}
+            className="relative mt-10 px-8 cursor-pointer py-3 border border-[#d4af37] hover:text-black text-[#d4af37] uppercase tracking-[0.15em] text-xs overflow-hidden"
+            initial="rest"
+            whileHover="hover"
+            animate="rest"
           >
-            Enquire Now
-          </button>
-        </div>
+            {/* Text */}
+            <motion.span
+              variants={{
+                rest: { y: 0 },
+                hover: { y: -2 },
+              }}
+              transition={{ duration: 0.3 }}
+              className="relative z-10"
+            >
+              Enquire Now
+            </motion.span>
+
+            {/* Background fill */}
+            <motion.div
+              variants={{
+                rest: { scaleX: 0 },
+                hover: { scaleX: 1 },
+              }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="absolute inset-0 bg-[#d4af37] origin-left"
+            />
+          </motion.button>
+        </motion.div>
       </div>
     </section>
   );
