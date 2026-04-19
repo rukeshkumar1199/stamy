@@ -76,33 +76,33 @@ export default function EventGallery() {
 
   return (
     <>
-      {/* Google Fonts */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');        html { scroll-behavior: smooth; }
-      `}</style>
-
-      <div
-        style={{ fontFamily: "'Jost', sans-serif" }}
-        className="bg-[#f5f0e8]"
-      >
+      <div className="bg-[#f5f0e8]">
         {/* ================= HERO ================= */}
         {cover && (
           <div className="relative h-[100vh] w-full overflow-hidden bg-[#1a1714]">
-            <motion.img
-              src={optimize(cover, 2000)}
-              srcSet={`
-                ${optimize(cover, 800)} 800w,
-                ${optimize(cover, 1200)} 1200w,
-                ${optimize(cover, 2000)} 2000w
-              `}
-              sizes="100vw"
-              className="w-full h-full object-cover"
-              style={{ filter: "brightness(0.95) contrast(1.05)" }}
-              initial={{ opacity: 0, scale: 1.08 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
-            />
+            <div className="absolute inset-0 overflow-hidden">
+              {/* IMAGE */}
+              <motion.img
+                src={optimize(cover, 2000)}
+                srcSet={`
+                  ${optimize(cover, 800)} 800w,
+                  ${optimize(cover, 1200)} 1200w,
+                  ${optimize(cover, 2000)} 2000w
+                `}
+                alt="Cover"
+                initial={{ opacity: 0, scale: 1.08 }}
+                animate={{ opacity: 1, scale: 1.04 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              {/* 🔥 NOISE LAYER (dissolve feel) */}
+              <motion.div
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 0 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                className="absolute inset-0 bg-[url('/noise.png')] opacity-30 mix-blend-overlay pointer-events-none"
+              />
+            </div>
 
             {/* Gradient overlay */}
             <div
@@ -125,7 +125,6 @@ export default function EventGallery() {
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 style={{
-                  fontFamily: "'Jost', sans-serif",
                   fontSize: "10px",
                   fontWeight: 500,
                   letterSpacing: "0.35em",
@@ -142,8 +141,8 @@ export default function EventGallery() {
                 initial={{ opacity: 0, y: 28 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                className="allura-regular"
                 style={{
-                  fontFamily: "'Cinzel Decorative', serif",
                   fontSize: "clamp(44px, 7vw, 50px)",
                   fontWeight: 500,
                   letterSpacing: "0.08em",
@@ -151,7 +150,7 @@ export default function EventGallery() {
                   marginBottom: "16px",
                 }}
               >
-                {name.toUpperCase()}
+                {name}
               </motion.h1>
 
               {/* Location */}
@@ -165,7 +164,6 @@ export default function EventGallery() {
                 }}
                 className="flex items-center gap-2"
                 style={{
-                  fontFamily: "'Jost', sans-serif",
                   fontSize: "14px",
                   fontWeight: 400,
                   letterSpacing: "0.2em",
@@ -224,7 +222,6 @@ export default function EventGallery() {
 
           <p
             style={{
-              fontFamily: "'Cormorant Garamond', serif",
               fontSize: "clamp(18px, 2.5vw, 22px)",
               fontWeight: 300,
               fontStyle: "italic",

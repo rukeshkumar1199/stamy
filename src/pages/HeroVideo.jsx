@@ -1,5 +1,6 @@
 import heroVideo from "../assets/hero.mp4";
 import { useNavigate } from "react-router-dom";
+import BlurText from "../components/BlurText";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 
@@ -13,7 +14,7 @@ export default function HeroVideo() {
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:wght@300;400&display=swap');
       `}</style>
 
-      <section className="relative h-[85vh] sm:h-[90vh] md:h-screen w-full overflow-hidden">
+      <section className="relative h-dvh md:h-screen w-full overflow-hidden">
         {/* VIDEO */}
         <motion.video
           className="absolute inset-0 w-full h-full object-cover"
@@ -43,23 +44,10 @@ export default function HeroVideo() {
             className="w-full max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-3xl"
           >
             {/* TITLE */}
-            <motion.h1
-              variants={{
-                hidden: { opacity: 0, y: 40 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 1.2 }}
-              className="text-white uppercase"
-              style={{
-                fontFamily: "'Cinzel', serif",
-                fontWeight: 500,
-                fontSize: "clamp(1.8rem, 5vw, 4rem)", // ✅ balanced
-                letterSpacing: "0.06em",
-                lineHeight: 1.2,
-              }}
-            >
-              Stamy Creations
-            </motion.h1>
+            <BlurText
+              className="text-white flex items-center justify-center text-center tracking-wide bold text-9xl font-serif allura-regular"
+              text="Stamy Creations"
+            />
 
             {/* LINE */}
             <motion.div
@@ -79,7 +67,6 @@ export default function HeroVideo() {
               }}
               className="mt-4 sm:mt-5 text-[#d4af37] text-[9px] sm:text-xs md:text-sm tracking-[0.25em] uppercase"
               style={{
-                fontFamily: "'Cormorant Garamond', serif",
                 fontWeight: 300,
               }}
             >
@@ -94,7 +81,6 @@ export default function HeroVideo() {
               }}
               className="mt-5 sm:mt-6 text-white/80 text-xs sm:text-sm md:text-base leading-relaxed max-w-[90%] sm:max-w-md md:max-w-xl mx-auto"
               style={{
-                fontFamily: "'Cormorant Garamond', serif",
                 fontWeight: 300,
               }}
             >
@@ -115,7 +101,6 @@ export default function HeroVideo() {
               className="mt-8 sm:mt-10 px-6 sm:px-8 py-2.5 sm:py-3 border border-[#d4af37] text-[#d4af37] uppercase tracking-[0.2em] text-[9px] sm:text-xs 
               hover:bg-[#d4af37] hover:text-black transition-all duration-500"
               style={{
-                fontFamily: "'Cinzel', serif",
                 fontWeight: 400,
               }}
             >
