@@ -11,6 +11,8 @@ export default function EventGallery() {
   const { id } = useParams();
   const { state, pathname } = useLocation();
 
+  const API = import.meta.env.VITE_API_URL;
+
   const [images, setImages] = useState([]);
   const [visibleImages, setVisibleImages] = useState([]);
   const [page, setPage] = useState(1);
@@ -18,18 +20,19 @@ export default function EventGallery() {
 
   const observer = useRef();
 
+  const optimize = (url, w = 1600) =>
+    `${url}?tr=w-${w},q-100,f-webp,pr-true,fo-auto`;
+
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [pathname]);
 
-  // 🔥 Fetch all images (only once)
+  /* ================= FETCH ================= */
   const fetchImages = async () => {
     try {
-      const res = await axios.get(
-        `https://node-stamy.vercel.app/events/${id}/images`,
-      );
+      const res = await axios.get(`${API}/events/${id}/images`);
       setImages(res.data);
-      setVisibleImages(res.data.slice(0, 12)); // first batch
+      setVisibleImages(res.data.slice(0, 10));
     } catch (err) {
       console.error(err);
     } finally {
@@ -39,162 +42,258 @@ export default function EventGallery() {
 
   useEffect(() => {
     fetchImages();
-  }, []);
-  const headingVariants = {
-    hidden: { opacity: 0, y: 16, letterSpacing: "0.22em" },
-    visible: {
-      opacity: 1,
-      y: 0,
-      letterSpacing: "0.08em",
-      transition: { duration: 0.9, ease: "easeOut" },
-    },
-  };
-  // 🔥 Load more images
+  }, [id]);
+
+  /* ================= LOAD MORE ================= */
   const loadMore = () => {
     const nextPage = page + 1;
-    const start = (nextPage - 1) * 12;
-    const end = start + 12;
-
+    const start = (nextPage - 1) * 10;
+    if (start >= images.length) return;
+    const end = start + 10;
     setVisibleImages((prev) => [...prev, ...images.slice(start, end)]);
-
     setPage(nextPage);
   };
 
-  // 🔥 Intersection Observer (scroll detect)
+  /* ================= OBSERVER ================= */
   const lastImageRef = useCallback(
     (node) => {
       if (loading) return;
-
       if (observer.current) observer.current.disconnect();
-
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          loadMore();
-        }
+        if (entries[0].isIntersecting) loadMore();
       });
-
       if (node) observer.current.observe(node);
     },
-    [loading, images],
+    [loading, images, page],
   );
 
+  /* ================= DATA ================= */
+  const cover = state?.coverImage || "";
+  const name = state?.eventName || "";
+  const place = state?.eventPlace || "";
+  const description = state?.eventDescription || "";
+  console.log(state);
+
   return (
-    <div>
-      <div className="mx-auto px-6 mt-30 text-center">
-        <motion.div
-          variants={headingVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2
-            style={{ fontFamily: "'Playfair Display', serif" }}
-            className="
-              relative inline-block
-              text-3xl md:text-5xl lg:text-6xl
-              font-medium
-              tracking-[0.12em]
-              leading-tight
-              text-transparent bg-clip-text
-              bg-gradient-to-r from-[#d4af37]  to-[#d4af37]
-            "
-          >
-            {state.eventName || ""}
-            {/* Animated underline */}
-            <span
-              className="
-              absolute left-1/2 -bottom-3
-              w-0 h-[2px]
-              bg-gradient-to-r from-transparent via-[#d4af37] to-transparent
-              -translate-x-1/2
-              group-hover:w-full
-              transition-all duration-700
-            "
-            ></span>
-          </h2>
+    <>
+      {/* Google Fonts */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');        html { scroll-behavior: smooth; }
+      `}</style>
 
-          {/* Subtitle (important for attraction) */}
-          <p
-            className="
-    my-3
-    text-gray-600
-    text-sm md:text-base
-    tracking-wide
-    max-w-xl mx-auto
-    flex items-center justify-center gap-2
-  "
-          >
-            <HiOutlineLocationMarker className="text-lg" />
-            {state.eventPlace || ""}
-          </p>
-          <span
-            className="
-      absolute  left-1/2 -translate-x-1/2
-      text-5xl text-[#d4af37]/40
-      font-serif
-    "
-          >
-            “
-          </span>
-          <p
-            style={{ fontFamily: "'Playfair Display', serif" }}
-            className="
-            pt-5
-        text-lg md:text-xl
-        text-gray-800
-        leading-relaxed
-        px-5
-        italic
-      "
-          >
-            {state.eventDescription || ""}
-          </p>
-          <div className="mt-6 flex justify-center">
-            <span className="w-12 h-[1px] bg-[#d4af37]"></span>
-          </div>
-        </motion.div>
-      </div>
       <div
-        className="mt-10 mb-10 grid gap-x-8 gap-y-14 px-6 md:px-12
-      [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]"
+        style={{ fontFamily: "'Jost', sans-serif" }}
+        className="bg-[#f5f0e8]"
       >
-        {/* Skeleton */}
-        {loading && <EventCardSkeletonLoader />}
+        {/* ================= HERO ================= */}
+        {cover && (
+          <div className="relative h-[100vh] w-full overflow-hidden bg-[#1a1714]">
+            <motion.img
+              src={optimize(cover, 2000)}
+              srcSet={`
+                ${optimize(cover, 800)} 800w,
+                ${optimize(cover, 1200)} 1200w,
+                ${optimize(cover, 2000)} 2000w
+              `}
+              sizes="100vw"
+              className="w-full h-full object-cover"
+              style={{ filter: "brightness(0.95) contrast(1.05)" }}
+              initial={{ opacity: 0, scale: 1.08 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
+            />
 
-        {/* Images */}
-        {visibleImages.length > 0 ? (
-          visibleImages.map((img, index) => {
-            const isLast = index === visibleImages.length - 1;
+            {/* Gradient overlay */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.35) 75%, rgba(0,0,0,0.55) 100%)",
+              }}
+            />
 
-            return (
-              <div
-                key={img._id}
-                ref={isLast ? lastImageRef : null} // 🔥 important
-                className="group bg-white overflow-hidden shadow hover:shadow-xl transition duration-500"
+            {/* Content */}
+            <div className="absolute inset-0 flex flex-col items-center justify-end text-center text-white pb-[10vh]">
+              {/* Eyebrow */}
+              <motion.p
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.7,
+                  duration: 0.9,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                style={{
+                  fontFamily: "'Jost', sans-serif",
+                  fontSize: "10px",
+                  fontWeight: 500,
+                  letterSpacing: "0.35em",
+                  textTransform: "uppercase",
+                  color: "#e8d5b0",
+                  marginBottom: "14px",
+                }}
               >
-                <div className="overflow-hidden">
-                  <img
-                    src={img.imageUrl.replace(
-                      "/upload/",
-                      "/upload/w_1200,q_auto:best,f_auto,dpr_auto/",
-                    )} // 🔥 Cloudinary optimize
-                    loading="lazy"
-                    alt="event"
-                    className="w-full  object-cover transition duration-700 group-hover:scale-105"
-                  />
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <div className="text-center font-bold">
-            No images found for this event.
+                Photography
+              </motion.p>
+
+              {/* Title */}
+              <motion.h1
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                style={{
+                  fontFamily: "'Cinzel Decorative', serif",
+                  fontSize: "clamp(44px, 7vw, 50px)",
+                  fontWeight: 500,
+                  letterSpacing: "0.08em",
+                  lineHeight: 1.1,
+                  marginBottom: "16px",
+                }}
+              >
+                {name.toUpperCase()}
+              </motion.h1>
+
+              {/* Location */}
+              <motion.p
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 1.3,
+                  duration: 0.9,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="flex items-center gap-2"
+                style={{
+                  fontFamily: "'Jost', sans-serif",
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  letterSpacing: "0.2em",
+                  color: "rgba(255,255,255,0.6)",
+                }}
+              >
+                <HiOutlineLocationMarker style={{ opacity: 0.7 }} />
+                {place}
+              </motion.p>
+            </div>
+
+            {/* Scroll hint line */}
+            <motion.div
+              className="absolute bottom-9 left-1/2 -translate-x-1/2 flex flex-col items-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.8, duration: 0.9 }}
+            >
+              <motion.div
+                style={{
+                  width: "1px",
+                  height: "40px",
+                  background:
+                    "linear-gradient(to bottom, transparent, rgba(255,255,255,0.45))",
+                }}
+                animate={{ scaleY: [1, 1.15, 1], opacity: [0.4, 1, 0.4] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 2.5 }}
+              />
+            </motion.div>
           </div>
         )}
-      </div>
 
-      <Footer />
-    </div>
+        {/* ================= DESCRIPTION ================= */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="text-center px-6 max-w-2xl mx-auto"
+          style={{ padding: "80px 24px 64px" }}
+        >
+          {/* Gold ornament line */}
+          <motion.div
+            initial={{ scaleX: 0, opacity: 0 }}
+            whileInView={{ scaleX: 1, opacity: 1 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true }}
+            style={{
+              width: "48px",
+              height: "1px",
+              background: "#c9a96e",
+              margin: "0 auto 32px",
+              transformOrigin: "center",
+            }}
+          />
+
+          <p
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "clamp(18px, 2.5vw, 22px)",
+              fontWeight: 300,
+              fontStyle: "italic",
+              lineHeight: 1.75,
+              color: "#4a4540",
+            }}
+          >
+            {description}
+          </p>
+        </motion.div>
+
+        {/* ================= GALLERY GRID ================= */}
+        <div className="px-5 pb-20">
+          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-[14px]">
+            {loading && <EventCardSkeletonLoader />}
+
+            {visibleImages.map((img, index) => {
+              const isLast = index === visibleImages.length - 1;
+
+              return (
+                <motion.div
+                  key={img._id}
+                  ref={isLast ? lastImageRef : null}
+                  initial={{ opacity: 0, y: 36 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.7,
+                    delay: (index % 4) * 0.06,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  viewport={{ once: true, amount: 0.05 }}
+                  className="mb-[14px] break-inside-avoid group relative overflow-hidden"
+                  style={{ borderRadius: "4px" }}
+                >
+                  <img
+                    src={optimize(img.imageUrl, 800)}
+                    className="w-full object-cover block"
+                    style={{
+                      filter: "saturate(0.92)",
+                      transition:
+                        "transform 1s cubic-bezier(0.22,1,0.36,1), filter 0.6s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.06)";
+                      e.currentTarget.style.filter =
+                        "saturate(1.05) brightness(0.9)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                      e.currentTarget.style.filter = "saturate(0.92)";
+                    }}
+                  />
+
+                  {/* Hover overlay */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, rgba(201,169,110,0.08), rgba(26,23,20,0.22))",
+                    }}
+                  />
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        <Footer />
+      </div>
+    </>
   );
 }

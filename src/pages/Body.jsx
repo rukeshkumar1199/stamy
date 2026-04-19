@@ -58,13 +58,15 @@ export default function Body() {
   const [playingVideo, setPlayingVideo] = useState(null);
   const [events, setEvents] = useState([]);
   const { pathname } = useLocation();
+  const API = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get("https://node-stamy.vercel.app/events");
+      const res = await axios.get(`${API}/events`);
       setEvents(res.data);
     } catch (err) {
       console.error(err);

@@ -6,20 +6,25 @@ import Spinner from "./Spinner";
 
 export default function PhotoUpload() {
   const navigate = useNavigate();
+
+  // ✅ Safe env usage
+  const API = import.meta.env.VITE_API_URL || "";
+
   const [form, setForm] = useState({
     eventName: "",
     eventPlace: "",
     eventDate: "",
     eventDescription: "",
     youtubeId: "",
-    image: null,
+    thumbnail: null, // ✅ changed
+    coverImage: null, // ✅ new
   });
 
-  const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
   const [eventId, setEventId] = useState(null);
   const [message, setMessage] = useState("");
-
+  const [thumbnailPreview, setThumbnailPreview] = useState(""); // ✅ new
+  const [coverPreview, setCoverPreview] = useState("");
   const [files, setFiles] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
 
@@ -28,10 +33,19 @@ export default function PhotoUpload() {
   ========================= */
   const handleChange = (e) => {
     setMessage("");
-    if (e.target.name === "image") {
+
+    if (e.target.name === "thumbnail") {
       const file = e.target.files[0];
-      setForm({ ...form, image: file });
-      setPreview(URL.createObjectURL(file));
+      if (!file) return;
+
+      setForm({ ...form, thumbnail: file });
+      setThumbnailPreview(URL.createObjectURL(file));
+    } else if (e.target.name === "coverImage") {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      setForm({ ...form, coverImage: file });
+      setCoverPreview(URL.createObjectURL(file));
     } else {
       setForm({ ...form, [e.target.name]: e.target.value });
     }
@@ -43,7 +57,12 @@ export default function PhotoUpload() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.eventName || !form.eventDate || !form.image) {
+    if (
+      !form.eventName ||
+      !form.eventDate ||
+      !form.thumbnail ||
+      !form.coverImage
+    ) {
       setMessage("⚠️ Please fill all required fields");
       return;
     }
@@ -54,31 +73,38 @@ export default function PhotoUpload() {
     data.append("eventDate", form.eventDate);
     data.append("eventDescription", form.eventDescription);
     data.append("youtubeId", form.youtubeId);
-    data.append("image", form.image);
+    data.append("thumbnail", form.thumbnail);
+    data.append("coverImage", form.coverImage);
 
     try {
       setLoading(true);
       setMessage("");
 
-      const res = await axios.post(
-        "https://node-stamy.vercel.app/events",
-        data,
-      );
+      const res = await axios.post(`${API}/events`, data);
 
       setEventId(res.data._id);
       setMessage("✅ Event created! Now upload gallery images");
 
+      // reset form
       setForm({
         eventName: "",
         eventPlace: "",
         eventDate: "",
         eventDescription: "",
         youtubeId: "",
-        image: null,
+        thumbnail: null,
+        coverImage: null,
       });
-      setPreview("");
+
+      setThumbnailPreview("");
+      setCoverPreview("");
     } catch (err) {
-      setMessage(err.message || "❌ Failed to create event");
+      console.error(err);
+      setMessage(
+        err.response?.data?.message ||
+          err.message ||
+          "❌ Failed to create event",
+      );
     } finally {
       setLoading(false);
     }
@@ -116,16 +142,16 @@ export default function PhotoUpload() {
       setLoading(true);
       setMessage("");
 
-      await axios.post(
-        `https://node-stamy.vercel.app/events/${eventId}/images`,
-        data,
-      );
+      await axios.post(`${API}/events/${eventId}/images`, data);
 
       setMessage("🔥 Images uploaded successfully");
       setFiles([]);
       setPreviewImages([]);
     } catch (err) {
-      setMessage(err.message || "❌ Upload failed");
+      console.error(err);
+      setMessage(
+        err.response?.data?.message || err.message || "❌ Upload failed",
+      );
     } finally {
       setLoading(false);
     }
@@ -158,20 +184,17 @@ export default function PhotoUpload() {
           </div>
         )}
 
-        {/* =========================
-          🔹 EVENT DETAILS
-      ========================= */}
+        {/* ========================= EVENT FORM ========================= */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <h3 className="text-lg font-semibold text-gray-700 border-b pb-2 flex items-center gap-2">
-            Event Details{" "}
+            Event Details
             <HiOutlinePencilAlt
               className="text-lg cursor-pointer"
-              title="View Enquires"
+              title="View Enquiries"
               onClick={() => navigate("/ViewEnquiries")}
             />
           </h3>
 
-          {/* Inputs Grid */}
           <div className="grid md:grid-cols-2 gap-5">
             <input
               type="text"
@@ -179,7 +202,7 @@ export default function PhotoUpload() {
               placeholder="Event Name"
               value={form.eventName}
               onChange={handleChange}
-              className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-[#d4af37] outline-none"
+              className="w-full border p-3 rounded-xl"
             />
 
             <input
@@ -188,7 +211,7 @@ export default function PhotoUpload() {
               placeholder="Event Location"
               value={form.eventPlace}
               onChange={handleChange}
-              className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-[#d4af37] outline-none"
+              className="w-full border p-3 rounded-xl"
             />
           </div>
 
@@ -197,7 +220,7 @@ export default function PhotoUpload() {
             name="eventDate"
             value={form.eventDate}
             onChange={handleChange}
-            className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-[#d4af37] outline-none"
+            className="w-full border p-3 rounded-xl"
           />
 
           <textarea
@@ -205,7 +228,7 @@ export default function PhotoUpload() {
             placeholder="Describe the event..."
             value={form.eventDescription}
             onChange={handleChange}
-            className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-[#d4af37] outline-none h-28 resize-none"
+            className="w-full border p-3 rounded-xl h-28"
           />
 
           <input
@@ -214,88 +237,59 @@ export default function PhotoUpload() {
             placeholder="YouTube Video ID (optional)"
             value={form.youtubeId}
             onChange={handleChange}
-            className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-[#d4af37] outline-none"
+            className="w-full border p-3 rounded-xl"
           />
 
-          {/* =========================
-            🔹 THUMBNAIL UPLOAD
-        ========================= */}
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-gray-600">
-              Upload Thumbnail
-            </label>
+          {/* Thumbnail */}
+          {/* Thumbnail */}
+          <input type="file" name="thumbnail" onChange={handleChange} />
 
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#d4af37] transition">
-              <input
-                type="file"
-                name="image"
-                onChange={handleChange}
-                className="hidden"
-                id="upload"
-              />
-              <label htmlFor="upload" className="cursor-pointer text-gray-500">
-                Click to upload or drag & drop
-              </label>
-            </div>
+          {thumbnailPreview && (
+            <img
+              src={thumbnailPreview}
+              className="w-full h-40 object-cover rounded-xl mt-2"
+            />
+          )}
 
-            {preview && (
-              <img
-                src={preview}
-                className="w-full h-56 object-cover rounded-xl shadow"
-              />
-            )}
-          </div>
+          {/* Cover Image */}
+          <input type="file" name="coverImage" onChange={handleChange} />
 
-          {/* BUTTON */}
+          {coverPreview && (
+            <img
+              src={coverPreview}
+              className="w-full h-40 object-cover rounded-xl mt-2"
+            />
+          )}
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#d4af37] hover:bg-[#c19b2e] text-white py-3 rounded-xl font-semibold tracking-wide transition duration-300 shadow-md"
+            className="w-full bg-[#d4af37] text-white py-3 rounded-xl"
           >
-            {"Create Event"}
+            Create Event
           </button>
         </form>
 
-        {/* =========================
-          🔥 GALLERY SECTION
-      ========================= */}
+        {/* ========================= GALLERY ========================= */}
         {eventId && (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">
-              Upload Event Gallery
-            </h3>
+          <div>
+            <input type="file" multiple onChange={handleMultiChange} />
 
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#d4af37] transition">
-              <input
-                type="file"
-                multiple
-                onChange={handleMultiChange}
-                className="hidden"
-                id="multiUpload"
-              />
-              <label
-                htmlFor="multiUpload"
-                className="cursor-pointer text-gray-500"
-              >
-                Select multiple images
-              </label>
+            <div className="grid grid-cols-3 gap-3 mt-3">
+              {previewImages.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  loading="lazy"
+                  className="h-24 object-cover rounded-lg"
+                />
+              ))}
             </div>
-
-            {previewImages.length > 0 && (
-              <div className="grid grid-cols-3 gap-3">
-                {previewImages.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    className="h-24 object-cover rounded-lg shadow-sm"
-                  />
-                ))}
-              </div>
-            )}
 
             <button
               onClick={handleMultiUpload}
-              className="w-full bg-gray-900 hover:bg-black text-white py-3 rounded-xl font-semibold transition duration-300"
+              disabled={loading}
+              className="w-full bg-black text-white py-3 mt-4 rounded-xl"
             >
               Upload Images
             </button>

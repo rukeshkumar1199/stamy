@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @import url("https://fonts.googleapis.com/css2?family=Oranienbaum&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
 body {
   margin: 0;
@@ -13,6 +14,11 @@ h4,
 h5,
 h6 {
   font-family: "Oranienbaum", serif;
+}
+
+@font-face {
+  font-family: "Soligant";
+  src: url("./assets/fonts/Soligant-Regular.ttf") format("truetype");
 }
 
 /* Premium Scrollbar */

@@ -61,8 +61,8 @@ export default function WeddingGallery() {
 
         {/* Main Heading */}
         <h2
-          style={{ fontFamily: "'Playfair Display', serif" }}
-          className="
+          style={{ fontFamily: "Soligant" }}
+          className="font-soligant
       text-3xl md:text-5xl lg:text-6xl
       text-black
       leading-tight
