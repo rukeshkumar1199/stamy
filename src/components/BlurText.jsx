@@ -1,3 +1,4 @@
+import { style } from "framer-motion/client";
 import { motion } from "motion/react";
 import { useEffect, useRef, useState, useMemo } from "react";
 
@@ -27,6 +28,7 @@ const BlurText = ({
   easing = (t) => t,
   onAnimationComplete,
   stepDuration = 0.35,
+  style: customStyle = {},
 }) => {
   const elements = animateBy === "words" ? text.split(" ") : text.split("");
   const [inView, setInView] = useState(false);
@@ -80,7 +82,7 @@ const BlurText = ({
     <p
       ref={ref}
       className={className}
-      style={{ display: "flex", flexWrap: "wrap" }}
+      style={{ display: "flex", flexWrap: "wrap", ...customStyle }}
     >
       {elements.map((segment, index) => {
         const animateKeyframes = buildKeyframes(fromSnapshot, toSnapshots);
