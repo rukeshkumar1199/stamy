@@ -161,7 +161,7 @@ export default function Body() {
             </div>
 
             {/* 🔥 Grid (Responsive Fixed) */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-2 md:gap-2 lg:gap-4 px-4 sm:px-6 md:px-10 lg:px-16 pb-8 mt-20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2 md:gap-2 lg:gap-4 px-4 sm:px-6 md:px-10 lg:px-16 pb-8 mt-20">
               {events.map((item, idx) => (
                 <motion.div
                   key={idx}
@@ -174,7 +174,7 @@ export default function Body() {
                 >
                   {/* IMAGE / VIDEO */}
                   <div
-                    className="relative w-full aspect-[4/5] sm:aspect-[5/4] md:aspect-[16/11] lg:aspect-[16/10] 
+                    className="relative w-full aspect-[5/4] sm:aspect-[5/4] md:aspect-[16/11] lg:aspect-[16/10] 
                 active:scale-[0.98] transition-transform overflow-hidden"
                   >
                     {playingVideo === idx ? (
