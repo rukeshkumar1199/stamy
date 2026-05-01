@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import GlimpseGallery from "./GlimpseGallery";
-import VideoSlideshow from "./VideoSlideShow";
+import VideoSlideshow from "./VideoSlideshow";
 import DashboardImages from "./DashboardImages";
 
 export default function PhilosophyPremium() {
