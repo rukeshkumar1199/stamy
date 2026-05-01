@@ -16,8 +16,9 @@ export default function PhotoUpload() {
     eventDate: "",
     eventDescription: "",
     youtubeId: "",
-    thumbnail: null, // ✅ changed
-    coverImage: null, // ✅ new
+    thumbnail: null,
+    coverImage: null,
+    videoThumbnailImage: null,
   });
 
   const [loading, setLoading] = useState(false);
@@ -27,6 +28,7 @@ export default function PhotoUpload() {
   const [coverPreview, setCoverPreview] = useState("");
   const [files, setFiles] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
+  const [videoThumbPreview, setVideoThumbPreview] = useState("");
 
   /* =========================
      🔹 HANDLE INPUT
@@ -46,6 +48,11 @@ export default function PhotoUpload() {
 
       setForm({ ...form, coverImage: file });
       setCoverPreview(URL.createObjectURL(file));
+    } else if (e.target.name === "videoThumbnailImage") {
+      const file = e.target.files[0];
+      if (!file) return;
+      setForm({ ...form, videoThumbnailImage: file });
+      setVideoThumbPreview(URL.createObjectURL(file));
     } else {
       setForm({ ...form, [e.target.name]: e.target.value });
     }
@@ -61,7 +68,8 @@ export default function PhotoUpload() {
       !form.eventName ||
       !form.eventDate ||
       !form.thumbnail ||
-      !form.coverImage
+      !form.coverImage ||
+      !form.videoThumbnailImage
     ) {
       setMessage("⚠️ Please fill all required fields");
       return;
@@ -75,6 +83,7 @@ export default function PhotoUpload() {
     data.append("youtubeId", form.youtubeId);
     data.append("thumbnail", form.thumbnail);
     data.append("coverImage", form.coverImage);
+    data.append("videoThumbnailImage", form.videoThumbnailImage);
 
     try {
       setLoading(true);
@@ -94,10 +103,12 @@ export default function PhotoUpload() {
         youtubeId: "",
         thumbnail: null,
         coverImage: null,
+        videoThumbnailImage: null,
       });
 
       setThumbnailPreview("");
       setCoverPreview("");
+      setVideoThumbPreview("");
     } catch (err) {
       console.error(err);
       setMessage(
@@ -242,6 +253,10 @@ export default function PhotoUpload() {
 
           {/* Thumbnail */}
           {/* Thumbnail */}
+          <label className="block text-sm font-medium text-gray-700">
+            Upload Thumbnail Image <span className="text-red-500">*</span>
+          </label>
+
           <input type="file" name="thumbnail" onChange={handleChange} />
 
           {thumbnailPreview && (
@@ -252,6 +267,10 @@ export default function PhotoUpload() {
           )}
 
           {/* Cover Image */}
+          <label className="block text-sm font-medium text-gray-700">
+            Upload Cover Image <span className="text-red-500">*</span>
+          </label>
+
           <input type="file" name="coverImage" onChange={handleChange} />
 
           {coverPreview && (
@@ -260,7 +279,23 @@ export default function PhotoUpload() {
               className="w-full h-40 object-cover rounded-xl mt-2"
             />
           )}
+          {/* Video Thumbnail */}
+          <label className="block text-sm font-medium text-gray-700">
+            Upload Video Thumbnail Image <span className="text-red-500">*</span>
+          </label>
 
+          <input
+            type="file"
+            name="videoThumbnailImage"
+            onChange={handleChange}
+          />
+
+          {videoThumbPreview && (
+            <img
+              src={videoThumbPreview}
+              className="w-full h-40 object-cover rounded-xl mt-2"
+            />
+          )}
           <button
             type="submit"
             disabled={loading}

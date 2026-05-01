@@ -71,16 +71,15 @@ export default function EventGallery() {
   const cover = state?.coverImage || "";
   const name = state?.eventName || "";
   const place = state?.eventPlace || "";
-  const description = state?.eventDescription || "";
-  console.log(state);
+  // const description = state?.eventDescription || "";
 
   return (
     <>
       {/* Google Fonts */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');        html { scroll-behavior: smooth; }
-      `}</style>
+          @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');        html { scroll-behavior: smooth; }
+        `}</style>
 
       <div
         style={{ fontFamily: "'Jost', sans-serif" }}
@@ -92,10 +91,10 @@ export default function EventGallery() {
             <motion.img
               src={optimize(cover, 2000)}
               srcSet={`
-                ${optimize(cover, 800)} 800w,
-                ${optimize(cover, 1200)} 1200w,
-                ${optimize(cover, 2000)} 2000w
-              `}
+                  ${optimize(cover, 800)} 800w,
+                  ${optimize(cover, 1200)} 1200w,
+                  ${optimize(cover, 2000)} 2000w
+                `}
               sizes="100vw"
               className="w-full h-full object-cover"
               style={{ filter: "brightness(0.95) contrast(1.05)" }}
@@ -115,36 +114,14 @@ export default function EventGallery() {
 
             {/* Content */}
             <div className="absolute inset-0 flex flex-col items-center justify-end text-center text-white pb-[10vh]">
-              {/* Eyebrow */}
-              <motion.p
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: 0.7,
-                  duration: 0.9,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                style={{
-                  fontFamily: "'Jost', sans-serif",
-                  fontSize: "10px",
-                  fontWeight: 500,
-                  letterSpacing: "0.35em",
-                  textTransform: "uppercase",
-                  color: "#e8d5b0",
-                  marginBottom: "14px",
-                }}
-              >
-                Photography
-              </motion.p>
-
               {/* Title */}
               <motion.h1
                 initial={{ opacity: 0, y: 28 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1, duration: 1, ease: [0.22, 1, 0.36, 1] }}
                 style={{
-                  fontFamily: "'Cinzel Decorative', serif",
-                  fontSize: "clamp(44px, 7vw, 50px)",
+                  fontFamily: "Ambroise, serif",
+                  fontSize: "clamp(20px, 7vw, 50px)",
                   fontWeight: 500,
                   letterSpacing: "0.08em",
                   lineHeight: 1.1,
@@ -165,7 +142,7 @@ export default function EventGallery() {
                 }}
                 className="flex items-center gap-2"
                 style={{
-                  fontFamily: "'Jost', sans-serif",
+                  fontFamily: "Ambroise, sans-serif",
                   fontSize: "14px",
                   fontWeight: 400,
                   letterSpacing: "0.2em",
@@ -198,47 +175,9 @@ export default function EventGallery() {
           </div>
         )}
 
-        {/* ================= DESCRIPTION ================= */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          viewport={{ once: true, amount: 0.3 }}
-          className="text-center px-6 max-w-2xl mx-auto"
-          style={{ padding: "80px 24px 64px" }}
-        >
-          {/* Gold ornament line */}
-          <motion.div
-            initial={{ scaleX: 0, opacity: 0 }}
-            whileInView={{ scaleX: 1, opacity: 1 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            viewport={{ once: true }}
-            style={{
-              width: "48px",
-              height: "1px",
-              background: "#c9a96e",
-              margin: "0 auto 32px",
-              transformOrigin: "center",
-            }}
-          />
-
-          <p
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "clamp(18px, 2.5vw, 22px)",
-              fontWeight: 300,
-              fontStyle: "italic",
-              lineHeight: 1.75,
-              color: "#4a4540",
-            }}
-          >
-            {description}
-          </p>
-        </motion.div>
-
         {/* ================= GALLERY GRID ================= */}
-        <div className="px-5 pb-20">
-          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-[14px]">
+        <div className="px-5 md:px-15 lg:px-15 pb-20 mt-10">
+          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-2 gap-[14px]">
             {loading && <EventCardSkeletonLoader />}
 
             {visibleImages.map((img, index) => {
@@ -257,7 +196,6 @@ export default function EventGallery() {
                   }}
                   viewport={{ once: true, amount: 0.05 }}
                   className="mb-[14px] break-inside-avoid group relative overflow-hidden"
-                  style={{ borderRadius: "4px" }}
                 >
                   <img
                     src={optimize(img.imageUrl, 800)}

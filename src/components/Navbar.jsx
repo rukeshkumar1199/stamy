@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  // eslint-disable-next-line no-unused-vars
   motion,
   useScroll,
   useTransform,
@@ -10,19 +11,28 @@ import { HiOutlineMail, HiMenuAlt3, HiX } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../utils/theme";
 import logo from "../assets/logo.png";
+import { useLocation } from "react-router-dom";
+
+// 🔥 Fonts (safe load once)
+if (!document.getElementById("premium-fonts")) {
+  const link = document.createElement("link");
+  link.id = "premium-fonts";
+  link.href =
+    "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap";
+  link.rel = "stylesheet";
+  document.head.appendChild(link);
+}
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const { primary } = theme.colors;
+  const { neutral } = theme.colors;
 
-  // Detect mobile
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -37,160 +47,180 @@ export default function Navbar() {
     else navigate("/");
   };
 
-  // Scroll logic
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if (isMobile) return;
+    if (isMobile) {
+      // ✅ Mobile: show ONLY at top
+      if (latest <= 10) {
+        setHidden(false);
+      } else {
+        setHidden(true);
+      }
+      return;
+    }
 
-    const prev = scrollY.getPrevious() ?? 0;
-
-    if (latest > prev && latest > 100) {
-      setHidden(true);
-    } else if (prev - latest > 5) {
-      setHidden(false);
+    if (latest > 100) {
+      setHidden(true); // hide after scroll
+    } else {
+      setHidden(false); // only visible at top
     }
   });
 
-  // Desktop animations
-  const width = "60vw";
-  const borderRadius = "40px";
-  const marginTop = "16px";
   const bg = useTransform(
     scrollY,
     [0, 300],
-    ["rgba(0,0,0,0)", "rgba(0,0,0,0.4)"],
+    ["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"],
   );
-  const scale = useTransform(scrollY, [0, 300], [1, 0.97]);
 
-  // Prevent background scroll
+  // 🔥 prevent scroll
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "auto";
   }, [open]);
 
+  const SOCIALS = [
+    {
+      icon: FaInstagram,
+      link: "https://www.instagram.com/soulfulsonnetsbysabari/",
+    },
+    {
+      icon: FaFacebookF,
+      link: "https://www.facebook.com/people/Soulful-sonnets-by-sabari/61573614180526/#",
+    },
+    {
+      icon: HiOutlineMail,
+      link: "mailto:hello@stamycreations.com",
+    },
+  ];
   return (
     <>
-      {/* 🔥 NAVBAR */}
+      {/* NAVBAR */}
       <motion.nav
-        style={!isMobile ? { marginTop } : {}}
-        animate={
-          !isMobile
-            ? {
-                y: hidden ? -120 : 0,
-                opacity: hidden ? 0 : 1,
-              }
-            : {}
-        }
+        animate={{ y: hidden ? -120 : 0, opacity: hidden ? 0 : 1 }}
         transition={{ duration: 0.4 }}
         className="fixed top-0 left-0 w-full z-[9999]"
       >
-        <div className="flex justify-center w-full">
-          <motion.div
-            style={
-              !isMobile
-                ? {
-                    width,
-                    borderRadius,
-                    backgroundColor: bg,
-                    marginTop,
-                    scale,
-                  }
-                : {
-                    width: "100%",
-                    borderRadius: "0px",
-                  }
-            }
-            className={`px-6 ${
-              isMobile
-                ? "bg-black/80 backdrop-blur-md"
-                : "backdrop-blur-xl border border-white/10 max-w-[1200px]"
-            }`}
-          >
-            <div className="flex items-center justify-between py-2">
-              {/* Logo */}
-              <img
-                src={logo}
-                alt="Logo"
-                className="h-10 md:h-12 cursor-pointer"
-                onClick={() => handleClick("Home")}
-              />
+        <motion.div
+          style={{
+            backgroundColor:
+              pathname === "/Enquiry" ||
+              pathname === "/upload" ||
+              pathname === "/ViewEnquiries" ||
+              pathname === "/AboutUs"
+                ? "black"
+                : bg,
+          }}
+          className="px-6"
+        >
+          <div className="flex items-center justify-between py-3">
+            {/* Logo */}
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-10 md:h-12 cursor-pointer"
+              onClick={() => handleClick("Home")}
+            />
 
-              {/* Desktop Menu */}
-              <div className="hidden md:flex gap-10 text-sm">
-                {[
-                  "Home",
-                  "Photography",
-                  "Films",
-                  "About",
-                  "Enquiry",
-                  "Upload",
-                ].map((item) => (
-                  <span
-                    key={item}
-                    onClick={() => handleClick(item)}
-                    className="cursor-pointer relative uppercase tracking-widest text-white group"
-                  >
-                    <span className="group-hover:opacity-80 transition">
-                      {item}
-                    </span>
+            {/* Desktop Menu */}
+            <div
+              className="hidden md:flex gap-10 text-sm text-white"
+              style={{
+                fontFamily: "Aesthet light,serif",
+                fontSize: "clamp(12px, 1vw, 13px)",
+                letterSpacing: "0.25em",
+              }}
+            >
+              {[
+                // { name: "Home", path: "/" },
+                { name: "Photography", path: "/PhotoGrid" },
+                { name: "Films", path: "/Body" },
+                { name: "About", path: "/AboutUs" },
+                { name: "Enquiry", path: "/Enquiry" },
+                { name: "Upload", path: "/upload" },
+              ].map((item) => {
+                const isActive = location.pathname === item.path;
+
+                return (
+                  <div key={item.name} className="flex flex-col items-center">
                     <span
-                      style={{ backgroundColor: primary }}
-                      className="absolute left-0 -bottom-2 w-0 h-[1px] group-hover:w-full transition-all duration-300"
-                    />
-                  </span>
-                ))}
-              </div>
+                      onClick={() => navigate(item.path)}
+                      className={`cursor-pointer uppercase transition-all duration-300 inline-block ${
+                        isActive
+                          ? "opacity-100"
+                          : "opacity-70 hover:opacity-100"
+                      }`}
+                      style={{ fontFamily: "Aesthet light,serif" }}
+                    >
+                      {item.name}
 
-              {/* Desktop Icons */}
-              <div className="hidden md:flex gap-5 text-white">
-                <FaInstagram
-                  size={18}
-                  className="cursor-pointer hover:opacity-80"
-                />
-                <FaFacebookF
-                  size={18}
-                  className="cursor-pointer hover:opacity-80"
-                />
-                <HiOutlineMail
-                  size={20}
-                  className="cursor-pointer hover:opacity-80"
-                />
-              </div>
+                      {/* 🔥 Underline */}
 
-              {/* Mobile Burger */}
-              <button
-                onClick={() => setOpen(!open)}
-                className="md:hidden w-12 h-12 flex items-center justify-center rounded-full border bg-black/50 backdrop-blur-xl"
-                style={{ borderColor: primary, color: primary }}
-              >
-                {open ? <HiX size={28} /> : <HiMenuAlt3 size={28} />}
-              </button>
+                      <span
+                        className={`block h-[2px] mt-1 transition-all duration-300 ${
+                          isActive ? "w-full opacity-100" : "w-0 opacity-0"
+                        }`}
+                        style={{ backgroundColor: neutral }}
+                      />
+                    </span>
+                  </div>
+                );
+              })}
             </div>
-          </motion.div>
-        </div>
+
+            <div className="hidden md:flex items-center gap-2">
+              {SOCIALS.map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <a
+                    key={i}
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 flex items-center justify-center text-white transition-all duration-300 cursor-pointer hover:scale-110 hover:text-[#d4af37]"
+                  >
+                    <Icon size={16} />
+                  </a>
+                );
+              })}
+            </div>
+
+            {/* Mobile Burger */}
+            <button
+              onClick={() => setOpen(!open)}
+              className="md:hidden z-[10001] w-12 h-12 flex items-center justify-center"
+              style={{ color: "#ffffff" }}
+            >
+              {open ? <HiX size={28} /> : <HiMenuAlt3 size={28} />}
+            </button>
+          </div>
+        </motion.div>
       </motion.nav>
 
-      {/* 🔥 MOBILE MENU (OUTSIDE NAV) */}
+      {/* 🔥 MOBILE MENU FIXED */}
       <div
         className={`md:hidden fixed inset-0 z-[10000]
-        bg-black/60 backdrop-blur-2xl
+        bg-black/80 backdrop-blur-2xl
         transition-all duration-500
         ${
           open
-            ? "opacity-100 visible translate-y-0"
-            : "opacity-0 invisible -translate-y-5"
-        }
-      `}
+            ? "opacity-100 visible pointer-events-auto"
+            : "opacity-0 invisible pointer-events-none"
+        }`}
       >
+        {/* Close */}
         <button
           onClick={() => setOpen(false)}
-          className="absolute top-6 right-6"
-          style={{ color: primary }}
+          className="absolute top-6 right-6 z-[10002]"
+          style={{ color: "#ffffff" }}
         >
           <HiX size={32} />
         </button>
 
-        <div className="flex flex-col items-center justify-center h-full gap-8">
+        {/* Menu */}
+        <div
+          className="flex flex-col items-center justify-center h-full gap-8 text-white"
+          style={{ fontFamily: "Aesthet light,serif" }}
+        >
           {["Home", "Photography", "Films", "About", "Enquiry", "Upload"].map(
             (item) => (
               <div key={item} className="text-center">
@@ -199,21 +229,16 @@ export default function Navbar() {
                     handleClick(item);
                     setOpen(false);
                   }}
-                  className="cursor-pointer uppercase tracking-widest text-white hover:opacity-80 transition"
+                  className="cursor-pointer uppercase tracking-[0.3em] text-lg"
                 >
                   {item}
                 </span>
-
-                <span
-                  style={{ backgroundColor: primary }}
-                  className="block h-[1px] w-10 mt-2 mx-auto opacity-70"
-                />
               </div>
             ),
           )}
 
-          {/* Social Icons */}
-          <div className="flex gap-8 pt-8" style={{ color: primary }}>
+          {/* Social */}
+          <div className="flex gap-8 pt-8" style={{ color: "#ffffff" }}>
             <FaInstagram size={24} />
             <FaFacebookF size={22} />
             <HiOutlineMail size={24} />

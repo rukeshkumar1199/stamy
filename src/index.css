@@ -6,15 +6,47 @@ body {
   overflow-x: hidden !important;
   font-family: "Montserrat", sans-serif;
 }
+@font-face {
+  font-family: "GFS Didot";
+  src: url("./assets/fonts/GFSDidot-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Ambroise";
+  src: url("./assets/fonts/Ambroise-Light.otf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Ambroise Regular";
+  src: url("./assets/fonts/Ambroise\ Regular.otf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "proximanovaexcn light";
+  src: url("./assets/fonts/Fontspring-DEMO-proximanova-light.otf")
+    format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Aesthet light";
+  src: url("./assets/fonts/fonnts.com-Aesthet-Nova-Light.otf")
+    format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 
-h1,
+/* h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
   font-family: "Oranienbaum", serif;
-}
+} */
 
 @font-face {
   font-family: "Soligant";
@@ -27,14 +59,10 @@ h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f0f0f; /* dark luxury */
+  background: #0f0f0f;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #d4af37, #f5e6a8);
+  background: linear-gradient(180deg, #f2efef, #f2efef);
   border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #f5e6a8, #d4af37);
 }
