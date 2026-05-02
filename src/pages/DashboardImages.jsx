@@ -42,7 +42,7 @@ export default function DashboardImages() {
           padding: "100px 0px 50px",
         }}
       >
-        KNOT JUST ANOTHER BLOG
+        Stories Beyond the Knot
       </h1>
       <div className="mx-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-9 px-4 md:px-10 lg:px-16 pb-12">
         {/* Skeleton */}

@@ -116,7 +116,7 @@ export default function VideoSlideshow() {
             padding: "50px 0px 50px",
           }}
         >
-          Moments That Move You
+          Moments That Move Your Soul
         </h1>
         <div
           ref={trackRef}

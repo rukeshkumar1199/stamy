@@ -400,7 +400,7 @@ export default function GlimpseGallery() {
             }}
             className="pb-5"
           >
-            A Glimpse of Our Memories
+            Where Moments Become Memories
           </h1>
         </div>
 
